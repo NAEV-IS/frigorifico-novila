@@ -1,0 +1,25 @@
+# Dependencies & package manager cache
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+
+# Logs & bundles
+debug.log
+*.log
+*.bundle
+
+# Agent / workspace metadata
+.agents/
+.claude/
+unslop-main/
+unslop-main.tar.gz
+
+# Temporary screenshots & one-off dev/test scripts
+*.png
+test-*.js
+final-*.js
+shot-*.js
+download-*.js
+*.py
