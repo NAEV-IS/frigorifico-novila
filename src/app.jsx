@@ -108,15 +108,13 @@ function playChime() {
 // Brand & primitives
 // ─────────────────────────────────────────────────────────────────────────────
 
-function SteerMark({ className = "h-10 w-10", tone = "gold" }) {
+function SteerMark({ className = "h-10 w-10" }) {
   return (
-    <svg viewBox="0 0 48 48" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M8 14C6 11 5.5 7 5.5 5.5c4 .2 7.7 2.1 10 5" />
-      <path d="M40 14c2-3 2.5-7 2.5-8.5-4 .2-7.7 2.1-10 5" />
-      <path d="M15 19c0-4 4-7 9-7s9 3 9 7v8c0 6-4 11-9 14-5-3-9-8-9-14v-8Z" />
-      <path d="M20 23h1M27 23h1" />
-      <path d="M21 31c2 1.5 4 1.5 6 0" />
-    </svg>
+    <img
+      src={IMAGES.logo}
+      alt="Frigorífico Novila"
+      className={`rounded-full object-cover ${className}`}
+    />
   );
 }
 
@@ -904,7 +902,7 @@ function WhatsappProfile({ open, onClose }) {
       <div className="bg-[#075E54] px-4 pb-4 pt-8 text-white">
         <button type="button" onClick={onClose} className="rounded-full p-1 text-white/90" aria-label="Volver al chat"><ArrowLeft size={19} /></button>
         <div className="mt-3 flex flex-col items-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10 p-1">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
             <SteerMark className="h-full w-full" />
           </div>
           <h3 className="mt-4 text-[20px] font-medium leading-none">Frigorífico Novila</h3>
@@ -1031,8 +1029,8 @@ function WaMessage({ msg, onQuickReply, products }) {
       ) : (
         <div className={`flex max-w-[88%] items-end gap-2 ${isOut ? "flex-row-reverse" : ""}`}>
           {!isOut && (
-            <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#1F1B16]/10 bg-[#FDFBF7] text-[#6B091E]">
-              <SteerMark className="h-5 w-5" />
+            <div className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#1F1B16]/10 bg-white">
+              <SteerMark className="h-full w-full" />
             </div>
           )}
           <div className={`relative min-w-[104px] px-3 py-2 text-[13px] leading-5 text-[#1F1B16] shadow-[0_1px_1px_rgba(0,0,0,.06)] ${isOut ? "bubble-out" : "bubble-in"}`}>
@@ -1172,7 +1170,7 @@ function WhatsAppView({ messages, typing, onSend, onAudio, waFlow, orders }) {
                 <div className="flex items-center gap-2 bg-[#075E54] px-3 py-2.5 text-white">
                   <button type="button" className="rounded-[6px] p-1 text-white/80 transition-colors hover:bg-white/10" aria-label="Volver"><ArrowLeft size={18} strokeWidth={1.5} /></button>
                   <button type="button" onClick={() => setProfileOpen(true)} className="flex min-w-0 flex-1 items-center gap-2.5 text-left">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white"><SteerMark className="h-6 w-6" /></span>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white"><SteerMark className="h-full w-full" /></span>
                     <span className="min-w-0">
                       <span className="flex items-center gap-1">
                         <span className="truncate text-[14px] font-medium leading-none">Frigorífico Novila</span>
@@ -1197,7 +1195,7 @@ function WhatsAppView({ messages, typing, onSend, onAudio, waFlow, orders }) {
                     {messages.map((msg) => <WaMessage key={msg.id} msg={msg} onQuickReply={onSend} products={[]} />)}
                     {typing && (
                       <div className="flex items-end gap-2">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full border border-[#1F1B16]/10 bg-[#FDFBF7] text-[#6B091E]"><SteerMark className="h-5 w-5" /></div>
+                        <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border border-[#1F1B16]/10 bg-white"><SteerMark className="h-full w-full" /></div>
                         <div className="bubble-in flex items-center gap-1 px-3 py-2.5">
                           {[0, 1, 2].map((dot) => <span key={dot} className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#1F1B16]/30" style={{ animationDelay: `${dot * 120}ms` }} />)}
                         </div>
