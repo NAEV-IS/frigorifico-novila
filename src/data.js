@@ -38,7 +38,7 @@ const PROMO_DEFS = [
   { cut: "Aguja", kg: 2, price: 16999, normal: 21000, image: "rawbeef", note: "Ideal milanesas y cazuela" },
   { cut: "Falda", kg: 2, price: 16999, normal: 19998, image: "beefcuts", note: "Para desmenuzar y guisar" },
   { cut: "Bocado Fino", kg: 2, price: 15999, normal: 20998, image: "rawbeef", note: "Tierno para bifes" },
-  { cut: "Bocado Ancho", kg: 2, price: 21999, normal: 26000, image: "sliced", note: "Sabor intenso a la parrilla" },
+  { cut: "Bocado Ancho", kg: 2, price: 21999, normal: 26000, image: "beefcuts", note: "Sabor intenso a la parrilla" },
   { cut: "Osobuco", kg: 2, price: 15999, normal: 17998, image: "beefcuts", note: "Para cazuela y guiso" },
   { cut: "Puchero Común", kg: 3, price: 9999, normal: 15000, image: "ribs", note: "Rinde para toda la semana" },
   { cut: "Costeleta Ancha", kg: 2, price: 20999, normal: 25998, image: "grill", note: "La del domingo" },
@@ -396,7 +396,7 @@ export const ASADO_PACKS = [
     title: "Costillar para 10 personas",
     weightLabel: "7,5 kg totales",
     detail: "6 kg Costillar + Vacío + 1,5 kg Chorizo Bombón",
-    image: "ribs",
+    image: "grill",
     items: [
       { productId: "mayorista-costillar-vacio-x-kg", qty: 6 },
       { productId: "elaborados-chorizo-bombon", qty: 1.5 },
