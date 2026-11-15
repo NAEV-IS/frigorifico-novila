@@ -802,8 +802,40 @@ function WebApp({ products, cart, onAdd, onAddPack, onRemove, onOpenCart, cartOp
                 Ver promos <ArrowRight size={15} strokeWidth={1.5} />
               </button>
             </div>
-            <div className={`relative ${full ? "min-h-[340px]" : "h-56"}`}>
-              <img src={IMAGES.hero} alt="Asado de Frigorífico Novila" className="absolute inset-0 h-full w-full object-cover" />
+            <div className={`relative flex flex-col items-center justify-between overflow-hidden px-5 py-6 text-center ${full ? "min-h-[340px] lg:py-8" : "min-h-[256px]"}`}>
+              <img
+                src={IMAGES.rawbeef}
+                alt="Cortes frescos en Frigorífico Novila"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-[#1F1B16]/90 via-[#3B0612]/65 to-[#1F1B16]/45"
+                aria-hidden="true"
+              />
+              <div className="relative z-10 my-auto flex flex-col items-center">
+                <div className="h-28 w-28 overflow-hidden rounded-full bg-white p-1.5 shadow-2xl ring-2 ring-[#C59B40]/70 sm:h-36 sm:w-36">
+                  <img
+                    src={IMAGES.logo}
+                    alt="Logo oficial de Frigorífico Novila"
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                </div>
+                <p className="mt-3 font-mono text-[11px] font-medium tracking-[0.18em] text-[#F5EFE6]/95 uppercase">
+                  FRIGORÍFICO NOVILA · CÓRDOBA
+                </p>
+              </div>
+              <div className="relative z-10 mt-4 flex flex-wrap items-center justify-center gap-1.5">
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
+                  <MapPin size={12} strokeWidth={1.75} className="text-[#C59B40]" />
+                  Av. Sabattini 3480 (al lado del Hiper)
+                </span>
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
+                  Mostrador + Vacío sin fila
+                </span>
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
+                  Playa de estacionamiento propia
+                </span>
+              </div>
             </div>
           </div>
         </section>
