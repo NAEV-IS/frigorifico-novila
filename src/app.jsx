@@ -793,11 +793,9 @@ function WebApp({ products, cart, onAdd, onAddPack, onRemove, onOpenCart, cartOp
         <section className="mx-auto max-w-[1180px] px-4 pt-6 sm:px-6">
           <div className={`overflow-hidden rounded-[18px] border border-[#1F1B16]/10 bg-[#FDFBF7] ${full ? "grid lg:grid-cols-[1.05fr_1fr]" : ""}`}>
             <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
-              <p className="text-[12px] text-[#7B7266]">Carnicería mayorista y minorista · Córdoba</p>
-              <h1 className="mt-4 max-w-[420px] font-display text-[44px] font-normal leading-[1.02] tracking-[-0.02em] text-[#1F1B16] sm:text-[58px]">
+              <h1 className="max-w-[420px] font-display text-[44px] font-normal leading-[1.02] tracking-[-0.02em] text-[#1F1B16] sm:text-[58px]">
                 Del campo a tu casa
               </h1>
-              <p className="mt-4 text-[15px] leading-6 text-[#5E554A]">Retiro sin fila en Av. Amadeo Sabattini 3480 (al lado del Hiper Libertad).</p>
               <button type="button" onClick={scrollToPromos} className="mt-8 flex h-11 w-fit items-center gap-2 rounded-[8px] bg-[#6B091E] px-5 text-[14px] font-medium text-white transition-colors hover:bg-[#580617]">
                 Ver promos <ArrowRight size={15} strokeWidth={1.5} />
               </button>
@@ -828,9 +826,6 @@ function WebApp({ products, cart, onAdd, onAddPack, onRemove, onOpenCart, cartOp
                 <span className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
                   <MapPin size={12} strokeWidth={1.75} className="text-[#C59B40]" />
                   Av. Sabattini 3480 (al lado del Hiper)
-                </span>
-                <span className="inline-flex items-center rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
-                  Mostrador + Vacío sin fila
                 </span>
                 <span className="inline-flex items-center rounded-full border border-white/15 bg-[#1F1B16]/70 px-2.5 py-1 text-[11px] font-medium text-[#FAF8F5] backdrop-blur-sm">
                   Playa de estacionamiento propia
@@ -881,14 +876,19 @@ function WebApp({ products, cart, onAdd, onAddPack, onRemove, onOpenCart, cartOp
                     <h3 className="mt-3 text-[15px] font-medium text-[#1F1B16]">{pack.title}</h3>
                     <p className="mt-1 text-[12px] leading-5 text-[#7B7266]">{pack.detail}</p>
                   </div>
-                  <button
-                    type="button"
-                    disabled={!allInStock}
-                    onClick={() => onAddPack(pack, packTotal)}
-                    className="mt-4 flex h-9 w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#6B091E]/30 bg-[#6B091E]/[0.04] text-[12px] font-medium text-[#6B091E] transition-colors hover:bg-[#6B091E] hover:text-white disabled:opacity-45"
-                  >
-                    <Plus size={14} strokeWidth={1.8} /> {allInStock ? "Cargar combo al carrito" : "Sin stock completo"}
-                  </button>
+                  <div className="mt-3">
+                    <div className="h-36 w-full overflow-hidden rounded-[8px] bg-[#EFE9DF]">
+                      <img src={IMAGES[pack.image] || IMAGES.grill} alt={pack.title} className="h-full w-full object-cover" />
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!allInStock}
+                      onClick={() => onAddPack(pack, packTotal)}
+                      className="mt-3 flex h-9 w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#6B091E]/30 bg-[#6B091E]/[0.04] text-[12px] font-medium text-[#6B091E] transition-colors hover:bg-[#6B091E] hover:text-white disabled:opacity-45"
+                    >
+                      <Plus size={14} strokeWidth={1.8} /> {allInStock ? "Cargar combo al carrito" : "Sin stock completo"}
+                    </button>
+                  </div>
                 </div>
               );
             })}

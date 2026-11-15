@@ -371,6 +371,7 @@ export const ASADO_PACKS = [
     title: "Asado para 4 personas",
     weightLabel: "3 kg totales",
     detail: "1,5 kg Vacío + 1 kg Costilla + 0,5 kg Chorizo Bombón",
+    image: "sliced",
     items: [
       { productId: "vacuno-vacio", qty: 1.5 },
       { productId: "vacuno-costilla", qty: 1 },
@@ -382,6 +383,7 @@ export const ASADO_PACKS = [
     title: "Asado para 6 personas",
     weightLabel: "5 kg totales",
     detail: "2 kg Vacío + 1,5 kg Costilla + 1 kg Chorizo + 0,5 kg Morcilla",
+    image: "grill",
     items: [
       { productId: "vacuno-vacio", qty: 2 },
       { productId: "vacuno-costilla", qty: 1.5 },
@@ -394,6 +396,7 @@ export const ASADO_PACKS = [
     title: "Costillar para 10 personas",
     weightLabel: "7,5 kg totales",
     detail: "6 kg Costillar + Vacío + 1,5 kg Chorizo Bombón",
+    image: "ribs",
     items: [
       { productId: "mayorista-costillar-vacio-x-kg", qty: 6 },
       { productId: "elaborados-chorizo-bombon", qty: 1.5 },
