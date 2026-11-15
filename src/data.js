@@ -7,11 +7,12 @@ export const BRAND = {
   name: "Frigorífico Novila",
   handle: "@frigorificonovila",
   slogan: "DEL CAMPO A TU CASA",
-  valueProp: "Carnicería mayorista y minorista. Precio mayorista, llevés lo que llevés.",
-  address: "Av. Sabattini 3480, Córdoba Capital",
+  valueProp: "Carnicería mayorista y minorista. Precio mayorista, llevés lo que llevés. Sin intermediarios.",
+  address: "Av. Amadeo Sabattini 3480 (al lado del Hiper Libertad), Córdoba Capital",
   hoursWeek: "Lunes a Sábado · 8:00 a 21:00 hs",
   hoursSunday: "Domingos y Feriados · 9:00 a 13:30 hs",
   phone: "351 700 8842",
+  landline: "0351 213-2794",
 };
 
 export const WHATSAPP_DEMO_PHONE = "351 700 8842";
@@ -184,24 +185,24 @@ export const INITIAL_PRODUCTS = makeProducts();
 
 export const INITIAL_CUSTOMERS = [
   {
-    id: "cli-1", name: "Lucía Fernández", phone: "351 612 4478", historicOrders: 7, historicSpent: 58400,
-    joined: "Mar 2025", tags: ["Web", "Asadora"], favorite: "Vacío",
+    id: "cli-1", name: "Lucía Fernández", phone: "351 612 4478", historicOrders: 4, historicSpent: 148500,
+    joined: "Oct 2026", tags: ["Web", "Asadora", "Compra del Mes"], favorite: "Media Res Familiar",
   },
   {
-    id: "cli-2", name: "Mariana Álvarez", phone: "351 555 0187", historicOrders: 12, historicSpent: 102300,
-    joined: "Ene 2025", tags: ["Bot IA", "Recompra"], favorite: "Milanesa Vacuna",
+    id: "cli-2", name: "Mariana Álvarez", phone: "351 555 0187", historicOrders: 6, historicSpent: 215400,
+    joined: "Oct 2026", tags: ["Bot IA", "Recompra", "Compra del Mes"], favorite: "Milanesa Vacuna",
   },
   {
-    id: "cli-3", name: "Diego Bustos", phone: "351 444 9021", historicOrders: 5, historicSpent: 41200,
-    joined: "Abr 2025", tags: ["Bot IA", "Parrillero"], favorite: "Costilla",
+    id: "cli-3", name: "Diego Bustos", phone: "351 444 9021", historicOrders: 3, historicSpent: 68200,
+    joined: "Oct 2026", tags: ["Bot IA", "Parrillero"], favorite: "Costilla",
   },
   {
-    id: "cli-4", name: "Carla Medina", phone: "351 333 7712", historicOrders: 9, historicSpent: 66900,
-    joined: "Feb 2025", tags: ["Web", "Cazuela"], favorite: "Pollo x 3 kg",
+    id: "cli-4", name: "Parador El Durazno (Gastronómico)", phone: "351 333 7712", historicOrders: 5, historicSpent: 342000,
+    joined: "Oct 2026", tags: ["Web", "Mayorista", "B2B"], favorite: "Nalga (Envasado al Vacío)",
   },
   {
-    id: "cli-5", name: "Pablo Ferreyra", phone: "351 222 6650", historicOrders: 3, historicSpent: 24500,
-    joined: "May 2025", tags: ["Web", "Mayorista"], favorite: "Bolsón Canino",
+    id: "cli-5", name: "Pablo Ferreyra", phone: "351 222 6650", historicOrders: 3, historicSpent: 112000,
+    joined: "Nov 2026", tags: ["Web", "Compra del Mes"], favorite: "Vacío (Envasado al Vacío)",
   },
 ];
 
@@ -364,9 +365,46 @@ export const PICKUP_SLOTS = [
   "Mañana 10:00 - 10:30 hs",
 ];
 
+export const ASADO_PACKS = [
+  {
+    id: "asado-4",
+    title: "Asado para 4 personas",
+    weightLabel: "3 kg totales",
+    detail: "1,5 kg Vacío + 1 kg Costilla + 0,5 kg Chorizo Bombón",
+    items: [
+      { productId: "vacuno-vacio", qty: 1.5 },
+      { productId: "vacuno-costilla", qty: 1 },
+      { productId: "elaborados-chorizo-bombon", qty: 0.5 },
+    ],
+  },
+  {
+    id: "asado-6",
+    title: "Asado para 6 personas",
+    weightLabel: "5 kg totales",
+    detail: "2 kg Vacío + 1,5 kg Costilla + 1 kg Chorizo + 0,5 kg Morcilla",
+    items: [
+      { productId: "vacuno-vacio", qty: 2 },
+      { productId: "vacuno-costilla", qty: 1.5 },
+      { productId: "elaborados-chorizo-bombon", qty: 1 },
+      { productId: "elaborados-morcilla", qty: 0.5 },
+    ],
+  },
+  {
+    id: "asado-10",
+    title: "Costillar para 10 personas",
+    weightLabel: "7,5 kg totales",
+    detail: "6 kg Costillar + Vacío + 1,5 kg Chorizo Bombón",
+    items: [
+      { productId: "mayorista-costillar-vacio-x-kg", qty: 6 },
+      { productId: "elaborados-chorizo-bombon", qty: 1.5 },
+    ],
+  },
+];
+
 export const PAYMENT_METHODS = [
-  { id: "caja", label: "Pagar al retirar en Caja Express", short: "Caja Express", icon: "Banknote" },
-  { id: "mp", label: "Mercado Pago / Transferencia (Retiro en 10 seg)", short: "Mercado Pago", icon: "Smartphone" },
+  { id: "mp", label: "Transferencia / Mercado Pago (Retiro Express sin fila en las 3 cajas)", short: "Transferencia / MP", icon: "Smartphone" },
+  { id: "credito", label: "Tarjeta de Crédito (1 pago) o Débito en Caja Express", short: "Tarjeta 1 pago / Débito", icon: "CreditCard" },
+  { id: "caja", label: "Efectivo al retirar en Caja Express", short: "Efectivo", icon: "Banknote" },
 ];
 
 export const CAMPAIGNS = [
@@ -390,14 +428,18 @@ export const CAMPAIGNS = [
   },
   {
     id: "recompra",
-    eyebrow: "Cada 15 días",
-    title: "Recordatorio de recompra",
-    description: "Para quienes compran Milanesas, Pollo x 3 kg o Bolsón Canino: vuelve antes de que se termine.",
+    eyebrow: "Alerta de Stock · Elaborados",
+    title: "Salieron Milanesas recién hechas ($9.999/kg)",
+    description: "Aviso prioritario antes de que se agoten en mostrador.",
     icon: "Repeat2",
     audience: "Clientes de recompra",
     tone: "charcoal",
   },
 ];
+
+export function calcRaffleChances(amount) {
+  return Math.max(0, Math.floor((Number(amount) || 0) / 25000));
+}
 
 export function formatMoney(value) {
   const rounded = Math.round(Number(value) || 0);

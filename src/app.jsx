@@ -12,10 +12,10 @@ import {
   Timer, TrendingUp, Trash2, UserRound, Users, Video, Volume2, Wallet, Warehouse, Wifi, X,
 } from "lucide-react";
 import {
-  BRAND, CAMPAIGNS, CATEGORIES, INITIAL_CUSTOMERS, INITIAL_ORDERS, INITIAL_PRODUCTS,
+  ASADO_PACKS, BRAND, CAMPAIGNS, CATEGORIES, INITIAL_CUSTOMERS, INITIAL_ORDERS, INITIAL_PRODUCTS,
   INITIAL_WHATSAPP_MESSAGES, PAYMENT_METHODS, PICKUP_SLOTS, TRANSFER_DATA, WHATSAPP_DEMO_PHONE,
-  firstName, formatKg, formatMoney, initials, isValidFullName, isValidPhone, nextOrderCode,
-  normalizePhone, normalizeText, nowTime, orderRequestedTotal, orderTotal, todayDate,
+  calcRaffleChances, firstName, formatKg, formatMoney, initials, isValidFullName, isValidPhone,
+  nextOrderCode, normalizePhone, normalizeText, nowTime, orderRequestedTotal, orderTotal, todayDate,
 } from "./data";
 import { IMAGES } from "./images";
 
@@ -77,6 +77,28 @@ function itemDescription(item, mode = "actual") {
   }
   if (item.pricing === "pack") return `${item.qty} × ${item.unitLabel}`;
   return `${item.qty} ${item.qty === 1 ? "unidad" : "unidades"}`;
+}
+
+function getOrderLane(items, total) {
+  const hasWholesale = (items || []).some((entry) => {
+    const category = entry?.category || entry?.product?.category || "";
+    const categoryId = entry?.product?.categoryId || "";
+    return category === "Mayorista" || categoryId === "mayorista";
+  });
+  const isMonthPurchase = Number(total || 0) >= 100000 || hasWholesale;
+  return isMonthPurchase
+    ? {
+        id: "mayorista",
+        label: "Compra del Mes / Mayorista",
+        short: "Compra del Mes",
+        description: "Carril Compra del Mes / Mayorista · Retiro directo sin fila en el corralito",
+      }
+    : {
+        id: "express",
+        label: "Retiro Express",
+        short: "Retiro Express",
+        description: "Ventanilla Retiro Express · Sin fila en las 3 cajas",
+      };
 }
 
 function playChime() {
@@ -469,12 +491,32 @@ function CheckoutSheet({ open, onClose, cartLines, total, customers, onConfirm, 
               {cartLines.map((line) => (
                 <div key={line.product.id} className="flex items-center justify-between gap-3 text-[13px]">
                   <span className="min-w-0 truncate text-[#5E554A]">
-                    {line.qty} × {line.product.name} <span className="text-[#7B7266]">· {line.product.unitLabel}</span>
+                    {line.product.kind === "kg" ? `${line.qty.toLocaleString("es-AR", { maximumFractionDigits: 2 })} kg` : `${line.qty} ×`} {line.product.name} <span className="text-[#7B7266]">· {line.product.unitLabel}</span>
                   </span>
                   <span className="shrink-0 font-mono text-[12px] text-[#1F1B16]">{formatMoney(line.qty * line.product.price)}</span>
                 </div>
               ))}
             </div>
+            {(() => {
+              const lane = getOrderLane(cartLines, total);
+              const chances = calcRaffleChances(total);
+              return (
+                <div className="mt-3 space-y-2 border-t border-[#1F1B16]/10 pt-3">
+                  <div className="flex items-center gap-2 rounded-[8px] border border-[#6B091E]/20 bg-[#FDFBF7] px-3 py-2 text-[11px] font-medium text-[#6B091E]">
+                    <Timer size={13} strokeWidth={1.6} className="shrink-0" />
+                    <span>{lane.description}</span>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-[8px] border border-[#8A5A22]/20 bg-[#FDFBF7] px-3 py-2 text-[11px] text-[#5E554A]">
+                    <PartyPopper size={13} strokeWidth={1.6} className="shrink-0 text-[#8A5A22]" />
+                    <span>
+                      {chances > 0
+                        ? `🎟️ Sorteo Novila: Sumás ${chances} ${chances === 1 ? "chance digital automática" : "chances digitales automáticas"} con tu WhatsApp (1 cada $25.000, sin cupón de papel).`
+                        : "🎟️ Sorteo Novila: A partir de $25.000 sumás chances digitales automáticas con tu WhatsApp (sin cupón de papel)."}
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           <div className="space-y-5 p-5">
@@ -584,15 +626,22 @@ function CheckoutSheet({ open, onClose, cartLines, total, customers, onConfirm, 
 
 function WebSuccess({ order, onWhatsApp, onContinue }) {
   const total = orderTotal(order);
+  const lane = getOrderLane(order.items, total);
+  const chances = calcRaffleChances(total);
   return (
     <div className="flex min-h-full flex-col bg-[#F7F4EE]">
       <div className="border-b border-[#1F1B16]/10 bg-[#FDFBF7] px-6 pb-8 pt-10">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#206A45] text-white"><Check size={20} strokeWidth={2} /></div>
         <h1 className="mt-5 font-display text-[34px] font-normal leading-none tracking-[-0.02em] text-[#1F1B16]">Pedido confirmado</h1>
         <p className="mt-2 text-[13px] text-[#5E554A]">Tu pedido ya está en el panel del frigorífico.</p>
-        <div className="mt-6 flex items-baseline gap-2">
-          <span className="text-[12px] text-[#7B7266]">Código de retiro</span>
-          <span className="font-mono text-[22px] font-medium tracking-[-0.02em] text-[#6B091E]">#{order.id}</span>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-baseline gap-2">
+            <span className="text-[12px] text-[#7B7266]">Código de retiro</span>
+            <span className="font-mono text-[22px] font-medium tracking-[-0.02em] text-[#6B091E]">#{order.id}</span>
+          </div>
+          <span className="rounded-full border border-[#6B091E]/25 bg-[#6B091E]/[0.06] px-2.5 py-1 text-[11px] font-medium text-[#6B091E]">
+            {lane.label}
+          </span>
         </div>
       </div>
       <div className="flex-1 space-y-3 p-6">
@@ -600,9 +649,10 @@ function WebSuccess({ order, onWhatsApp, onContinue }) {
           <div className="flex items-start gap-3">
             <Clock size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-[#6B091E]" />
             <div>
-              <p className="text-[12px] text-[#7B7266]">Retiro</p>
+              <p className="text-[12px] text-[#7B7266]">Retiro · {lane.short}</p>
               <p className="mt-1 text-[14px] font-medium text-[#1F1B16]">{order.pickupSlot}</p>
-              <p className="mt-1 text-[12px] text-[#7B7266]">Av. Sabattini 3480</p>
+              <p className="mt-1 text-[12px] text-[#7B7266]">{BRAND.address}</p>
+              <p className="mt-1 text-[11px] font-medium text-[#206A45]">{lane.description}</p>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4 border-t border-[#1F1B16]/10 pt-4">
@@ -613,6 +663,22 @@ function WebSuccess({ order, onWhatsApp, onContinue }) {
             <div>
               <p className="text-[11px] text-[#7B7266]">Total estimado</p>
               <p className="mt-1 font-mono text-[14px] text-[#1F1B16]">{formatMoney(total)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-[12px] border border-[#8A5A22]/25 bg-[#8A5A22]/[0.06] p-5">
+          <div className="flex items-start gap-3">
+            <PartyPopper size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-[#8A5A22]" />
+            <div>
+              <p className="text-[13px] font-medium text-[#1F1B16]">
+                🎟️ Sorteo Novila · {chances > 0 ? `${chances} ${chances === 1 ? "chance digital acreditada" : "chances digitales acreditadas"}` : "Chances digitales por WhatsApp"}
+              </p>
+              <p className="mt-1 text-[12px] leading-5 text-[#5E554A]">
+                {chances > 0
+                  ? `Quedaron registradas automáticamente con tu WhatsApp (${order.phone}). Sin cupón de papel ni urna.`
+                  : "Sumás 1 chance automática cada $25.000 de compra registrada con tu WhatsApp."}
+              </p>
             </div>
           </div>
         </div>
@@ -651,7 +717,7 @@ function WebSuccess({ order, onWhatsApp, onContinue }) {
   );
 }
 
-function WebApp({ products, cart, onAdd, onRemove, onOpenCart, cartOpen, onCloseCart, onConfirm, customers, lastWebOrder, onClearLastOrder, onGoWhatsApp, full, onToggleFull }) {
+function WebApp({ products, cart, onAdd, onAddPack, onRemove, onOpenCart, cartOpen, onCloseCart, onConfirm, customers, lastWebOrder, onClearLastOrder, onGoWhatsApp, full, onToggleFull }) {
   const [category, setCategory] = useState("vacuno");
   const [query, setQuery] = useState("");
   const promoRef = useRef(null);
@@ -661,7 +727,7 @@ function WebApp({ products, cart, onAdd, onRemove, onOpenCart, cartOpen, onClose
     () => cart.map((line) => ({ ...line, product: products.find((product) => product.id === line.productId) })).filter((line) => line.product),
     [cart, products]
   );
-  const cartCount = cartLines.reduce((sum, line) => sum + line.qty, 0);
+  const cartCount = Math.round(cartLines.reduce((sum, line) => sum + line.qty, 0) * 100) / 100;
   const cartTotal = cartLines.reduce((sum, line) => sum + line.qty * line.product.price, 0);
 
   const featured = products.filter((product) => product.categoryId === "super").slice(0, 4);
@@ -727,11 +793,11 @@ function WebApp({ products, cart, onAdd, onRemove, onOpenCart, cartOpen, onClose
         <section className="mx-auto max-w-[1180px] px-4 pt-6 sm:px-6">
           <div className={`overflow-hidden rounded-[18px] border border-[#1F1B16]/10 bg-[#FDFBF7] ${full ? "grid lg:grid-cols-[1.05fr_1fr]" : ""}`}>
             <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
-              <p className="text-[12px] text-[#7B7266]">Carnicería · Córdoba</p>
+              <p className="text-[12px] text-[#7B7266]">Carnicería mayorista y minorista · Córdoba</p>
               <h1 className="mt-4 max-w-[420px] font-display text-[44px] font-normal leading-[1.02] tracking-[-0.02em] text-[#1F1B16] sm:text-[58px]">
                 Del campo a tu casa
               </h1>
-              <p className="mt-4 text-[15px] leading-6 text-[#5E554A]">Retiro en Av. Sabattini 3480.</p>
+              <p className="mt-4 text-[15px] leading-6 text-[#5E554A]">Retiro sin fila en Av. Amadeo Sabattini 3480 (al lado del Hiper Libertad).</p>
               <button type="button" onClick={scrollToPromos} className="mt-8 flex h-11 w-fit items-center gap-2 rounded-[8px] bg-[#6B091E] px-5 text-[14px] font-medium text-white transition-colors hover:bg-[#580617]">
                 Ver promos <ArrowRight size={15} strokeWidth={1.5} />
               </button>
@@ -756,6 +822,45 @@ function WebApp({ products, cart, onAdd, onRemove, onOpenCart, cartOpen, onClose
               {featured.map((product) => <PromoCard key={product.id} product={product} onAdd={onAdd} compact />)}
             </div>
           )}
+        </section>
+
+        <section className="mx-auto max-w-[1180px] px-4 pt-10 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-[28px] font-normal leading-none tracking-[-0.01em] text-[#1F1B16]">Armá tu Asado en 1 clic</h2>
+              <p className="mt-1.5 text-[12px] text-[#7B7266]">Combos calculados según cantidad de comensales · Retiro Express sin fila</p>
+            </div>
+            <span className="font-mono text-[11px] text-[#6B091E]">Precio mayorista</span>
+          </div>
+          <div className={`mt-4 grid gap-3 ${full ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1"}`}>
+            {ASADO_PACKS.map((pack) => {
+              const packTotal = pack.items.reduce((sum, entry) => {
+                const product = products.find((item) => item.id === entry.productId);
+                return sum + (product ? product.price * entry.qty : 0);
+              }, 0);
+              const allInStock = pack.items.every((entry) => products.find((item) => item.id === entry.productId)?.stock);
+              return (
+                <div key={pack.id} className="flex flex-col justify-between rounded-[12px] border border-[#1F1B16]/10 bg-[#FDFBF7] p-4">
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="rounded-full bg-[#EFE9DF] px-2.5 py-0.5 font-mono text-[11px] text-[#6B091E]">{pack.weightLabel}</span>
+                      <span className="font-mono text-[16px] font-medium tabular-nums text-[#1F1B16]">{formatMoney(packTotal)}</span>
+                    </div>
+                    <h3 className="mt-3 text-[15px] font-medium text-[#1F1B16]">{pack.title}</h3>
+                    <p className="mt-1 text-[12px] leading-5 text-[#7B7266]">{pack.detail}</p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!allInStock}
+                    onClick={() => onAddPack(pack, packTotal)}
+                    className="mt-4 flex h-9 w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#6B091E]/30 bg-[#6B091E]/[0.04] text-[12px] font-medium text-[#6B091E] transition-colors hover:bg-[#6B091E] hover:text-white disabled:opacity-45"
+                  >
+                    <Plus size={14} strokeWidth={1.8} /> {allInStock ? "Cargar combo al carrito" : "Sin stock completo"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <section className="mx-auto max-w-[1180px] px-4 pt-10 sm:px-6">
@@ -844,7 +949,7 @@ function WebApp({ products, cart, onAdd, onRemove, onOpenCart, cartOpen, onClose
   );
 }
 
-function WebView({ products, cart, customers, lastWebOrder, onAdd, onRemove, onOpenCart, cartOpen, onCloseCart, onConfirm, onClearLastOrder, onGoWhatsApp }) {
+function WebView({ products, cart, customers, lastWebOrder, onAdd, onAddPack, onRemove, onOpenCart, cartOpen, onCloseCart, onConfirm, onClearLastOrder, onGoWhatsApp }) {
   const [full, setFull] = useState(true);
   const cartCount = cart.reduce((sum, line) => sum + line.qty, 0);
   const cartTotal = cart.reduce((sum, line) => {
@@ -859,6 +964,7 @@ function WebView({ products, cart, customers, lastWebOrder, onAdd, onRemove, onO
       customers={customers}
       lastWebOrder={lastWebOrder}
       onAdd={onAdd}
+      onAddPack={onAddPack}
       onRemove={onRemove}
       onOpenCart={onOpenCart}
       cartOpen={cartOpen}
@@ -918,7 +1024,7 @@ function WhatsappProfile({ open, onClose }) {
           <div className="mt-3 space-y-3">
             <div className="flex items-start gap-2.5">
               <MapPin size={15} className="mt-0.5 shrink-0 text-[#6B091E]" />
-              <div><p className="text-[13px] font-medium text-[#1F1B16]">Av. Sabattini 3480</p><p className="mt-0.5 text-[11px] text-[#7B7266]">Córdoba Capital, Argentina</p></div>
+              <div><p className="text-[13px] font-medium text-[#1F1B16]">Av. Amadeo Sabattini 3480</p><p className="mt-0.5 text-[11px] text-[#7B7266]">Al lado del Hiper Libertad · Córdoba Capital · Tel. {BRAND.landline}</p></div>
             </div>
             <div className="flex items-start gap-2.5">
               <Clock size={15} className="mt-0.5 shrink-0 text-[#6B091E]" />
@@ -1318,7 +1424,117 @@ function OrderSteps({ status }) {
   );
 }
 
-function OrderCard({ order, onAdvance, onMarkReady, onWithdraw, onUpdateWeight, onConfirmPayment, onRequestSlot, onToast }) {
+function TicketModal({ order, onClose, onToast }) {
+  if (!order) return null;
+  const total = orderTotal(order);
+  const lane = getOrderLane(order.items, total);
+  const chances = calcRaffleChances(total);
+  const isApproved = (order.paymentStatus || "approved") === "approved";
+
+  const handlePrint = () => {
+    onToast({
+      type: "success",
+      title: `Comanda #${order.id} enviada a impresión`,
+      message: "Formato térmico 80mm listo para pegar en bolsa (sin fila en el corralito).",
+      icon: "ReceiptText",
+      duration: 3600,
+    });
+    window.print?.();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#1F1B16]/55 p-4 backdrop-blur-[2px]" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <div className="flex max-h-[92vh] w-full max-w-[380px] flex-col overflow-hidden rounded-[14px] border border-[#1F1B16]/15 bg-[#F7F4EE] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#1F1B16]/10 bg-[#FDFBF7] px-4 py-3">
+          <div className="flex items-center gap-2 text-[13px] font-medium text-[#1F1B16]">
+            <ReceiptText size={16} strokeWidth={1.6} className="text-[#6B091E]" /> Comanda térmica 80mm
+          </div>
+          <button type="button" onClick={onClose} className="rounded-[6px] p-1.5 text-[#5E554A] hover:bg-[#EFE9DF]" aria-label="Cerrar comanda">
+            <X size={16} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        <div className="thin-scrollbar flex-1 overflow-y-auto p-4">
+          <div className="mx-auto w-full rounded-[8px] border border-dashed border-[#1F1B16]/25 bg-white p-4 font-mono text-[12px] text-[#1F1B16] shadow-sm">
+            <div className="border-b border-dashed border-[#1F1B16]/20 pb-3 text-center">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#5E554A]">Frigorífico Novila</p>
+              <p className="mt-0.5 text-[10px] text-[#7B7266]">Av. Amadeo Sabattini 3480 · Córdoba</p>
+              <p className="mt-2 text-[28px] font-bold leading-none tracking-[-0.02em] text-[#6B091E]">#{order.id}</p>
+              <span className="mt-2 inline-block rounded-[4px] border border-[#1F1B16]/20 bg-[#F7F4EE] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em]">
+                {lane.label}
+              </span>
+            </div>
+
+            <div className="space-y-1 border-b border-dashed border-[#1F1B16]/20 py-3 text-[11px]">
+              <div className="flex justify-between gap-2">
+                <span className="text-[#7B7266]">Cliente:</span>
+                <span className="text-right font-semibold">{order.customerName}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span className="text-[#7B7266]">WhatsApp:</span>
+                <span>{order.phone}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span className="text-[#7B7266]">Franja:</span>
+                <span className="text-right">{order.pickupSlot || "A confirmar"}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span className="text-[#7B7266]">Estado pago:</span>
+                <span className={isApproved ? "font-semibold text-[#206A45]" : "font-semibold text-[#8A5A22]"}>
+                  {isApproved ? "ACREDITADO · SIN FILA" : "EN REVISIÓN"}
+                </span>
+              </div>
+            </div>
+
+            <div className="border-b border-dashed border-[#1F1B16]/20 py-3">
+              <div className="mb-1.5 flex justify-between text-[10px] uppercase text-[#7B7266]">
+                <span>Corte / Peso</span>
+                <span>Subtotal</span>
+              </div>
+              <div className="space-y-2 text-[11px]">
+                {order.items.map((item, idx) => (
+                  <div key={`${item.productId}-${idx}`}>
+                    <div className="flex justify-between gap-2 font-semibold">
+                      <span>{item.name}</span>
+                      <span>{formatMoney(lineTotal(item))}</span>
+                    </div>
+                    <p className="text-[10px] text-[#7B7266]">
+                      {item.pricing === "kg"
+                        ? `Pedido: ${formatKg(item.requestedKg)} · Balanza: ${formatKg(item.actualKg)}`
+                        : `${item.qty} × ${item.unitLabel}`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <div className="flex items-baseline justify-between">
+                <span className="text-[11px] uppercase text-[#5E554A]">Total final</span>
+                <span className="text-[20px] font-bold">{formatMoney(total)}</span>
+              </div>
+              <p className="mt-2 rounded-[4px] bg-[#F7F4EE] px-2 py-1.5 text-center text-[10px] text-[#5E554A]">
+                🎟️ Sorteo Novila: {chances} {chances === 1 ? "chance acreditada" : "chances acreditadas"}
+              </p>
+              <p className="mt-2 text-center text-[10px] text-[#7B7266]">Pegar en bolsa · Retiro directo Ventanilla Express</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 border-t border-[#1F1B16]/10 bg-[#FDFBF7] px-4 py-3">
+          <button type="button" onClick={onClose} className="h-9 flex-1 rounded-[8px] border border-[#1F1B16]/15 text-[12px] text-[#5E554A] hover:bg-[#EFE9DF]">
+            Cerrar
+          </button>
+          <button type="button" onClick={handlePrint} className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[8px] bg-[#6B091E] text-[12px] font-medium text-white hover:bg-[#580617]">
+            <ReceiptText size={14} strokeWidth={1.6} /> Imprimir comanda
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OrderCard({ order, onAdvance, onMarkReady, onWithdraw, onUpdateWeight, onConfirmPayment, onRequestSlot, onOpenTicket, onToast }) {
   const total = orderTotal(order);
   const requested = orderRequestedTotal(order);
   const status = ORDER_STATUS[order.status] || ORDER_STATUS[1];
@@ -1329,23 +1545,43 @@ function OrderCard({ order, onAdvance, onMarkReady, onWithdraw, onUpdateWeight, 
   const waitingSlot = !isReview && !order.pickupSlot;
   const weightsLocked = isReview || waitingSlot;
   const paymentReference = order.paymentReference || "TRF-PENDIENTE";
+  const lane = getOrderLane(order.items, total);
+  const chances = calcRaffleChances(total);
 
   return (
     <article className="overflow-hidden rounded-[14px] border border-[#1F1B16]/10 bg-[#FDFBF7]">
       <div className="h-[2px]" style={{ background: status.color }} />
       <div className="p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <span className="font-mono text-[12px] text-[#7B7266]">#{order.id}</span>
             <span className="flex items-center gap-1.5 text-[11px] text-[#7B7266]">
               <Icon name={order.channel === "web" ? "ShoppingBag" : "MessageCircle"} size={13} strokeWidth={1.5} />
               {order.channel === "web" ? "Web" : "WhatsApp"}
             </span>
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${lane.id === "mayorista" ? "bg-[#6B091E]/10 text-[#6B091E]" : "bg-[#206A45]/10 text-[#206A45]"}`}>
+              {lane.label}
+            </span>
+            {chances > 0 && (
+              <span className="rounded-full bg-[#8A5A22]/10 px-2 py-0.5 font-mono text-[10px] text-[#8A5A22]">
+                🎟️ {chances} {chances === 1 ? "chance" : "chances"}
+              </span>
+            )}
           </div>
-          <span className="flex items-center gap-2 text-[12px] text-[#5E554A]">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.color }} />
-            {status.full.replace(" (Cliente Avisado)", "")}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onOpenTicket(order)}
+              className="flex h-7 items-center gap-1 rounded-[6px] border border-[#1F1B16]/15 bg-white px-2 text-[11px] text-[#1F1B16] transition-colors hover:bg-[#EFE9DF]"
+              title="Vista previa de comanda térmica 80mm"
+            >
+              <ReceiptText size={12} strokeWidth={1.5} /> Comanda 80mm
+            </button>
+            <span className="flex items-center gap-2 text-[12px] text-[#5E554A]">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.color }} />
+              {status.full.replace(" (Cliente Avisado)", "")}
+            </span>
+          </div>
         </div>
 
         <div className="mt-4 flex items-start justify-between gap-4">
@@ -1528,6 +1764,7 @@ function CustomerTable({ customers, orders, onReminder, onToast }) {
                 <th className="px-4 py-3 font-normal">WhatsApp</th>
                 <th className="px-4 py-3 text-center font-normal">Pedidos</th>
                 <th className="px-4 py-3 text-right font-normal">Total gastado</th>
+                <th className="px-4 py-3 text-center font-normal">Chances Sorteo</th>
                 <th className="px-4 py-3 font-normal">Último pedido</th>
                 <th className="px-4 py-3 text-right font-normal">Acción</th>
               </tr>
@@ -1547,6 +1784,11 @@ function CustomerTable({ customers, orders, onReminder, onToast }) {
                   <td className="px-4 py-3 text-[12px] text-[#5E554A]">{customer.phone}</td>
                   <td className="px-4 py-3 text-center font-mono text-[12px] text-[#5E554A]">{customer.orderCount}</td>
                   <td className="px-4 py-3 text-right font-mono text-[13px] tabular-nums text-[#1F1B16]">{formatMoney(customer.spent)}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#8A5A22]/10 px-2.5 py-0.5 font-mono text-[11px] text-[#8A5A22]">
+                      🎟️ {calcRaffleChances(customer.spent)}
+                    </span>
+                  </td>
                   <td className="px-4 py-3">
                     {customer.lastOrder ? (
                       <div>
@@ -1570,7 +1812,7 @@ function CustomerTable({ customers, orders, onReminder, onToast }) {
               ))}
               {!rows.length && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-[12px] text-[#7B7266]">No hay clientes con ese nombre o teléfono.</td>
+                  <td colSpan={7} className="px-4 py-12 text-center text-[12px] text-[#7B7266]">No hay clientes con ese nombre o teléfono.</td>
                 </tr>
               )}
             </tbody>
@@ -1712,6 +1954,7 @@ function PanelView({ orders, customers, products, onAdvance, onMarkReady, onWith
   const [tab, setTab] = useState("board");
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const [ticketOrder, setTicketOrder] = useState(null);
 
   const activeOrders = orders.filter((order) => order.status < 4);
   const reviewOrders = orders.filter((order) => order.paymentStatus === "review");
@@ -1806,6 +2049,7 @@ function PanelView({ orders, customers, products, onAdvance, onMarkReady, onWith
                     onUpdateWeight={onUpdateWeight}
                     onConfirmPayment={onConfirmPayment}
                     onRequestSlot={onRequestSlot}
+                    onOpenTicket={setTicketOrder}
                     onToast={onToast}
                   />
                 ))}
@@ -1823,6 +2067,7 @@ function PanelView({ orders, customers, products, onAdvance, onMarkReady, onWith
         {tab === "clients" && <CustomerTable customers={customers} orders={orders} onReminder={onReminder} onToast={onToast} />}
         {tab === "catalog" && <CatalogTable products={products} onUpdatePrice={onUpdatePrice} onToggleStock={onToggleStock} onToast={onToast} />}
       </div>
+      <TicketModal order={ticketOrder} onClose={() => setTicketOrder(null)} onToast={onToast} />
     </main>
   );
 }
@@ -1848,7 +2093,7 @@ function CrmView({ customers, products, campaignState, onSimulate, onGoWhatsApp 
   const previews = {
     miercoles: `Hola ${firstName(target?.name) || "vecino"}, estas son las que vuelan esta semana:\n\n${promos.map((promo) => `• ${promo.name.replace("Promo ", "")} ${promo.unit} · ${formatMoney(promo.price)}`).join("\n")}\n\nArmá tu pedido por acá.`,
     viernes: `Hola ${firstName(target?.name) || "vecino"}, ¿armamos el asado de este finde?\n\nVacío ${formatMoney(asadoPrices.vacio)}/kg, Costilla ${formatMoney(asadoPrices.costilla)}/kg y Chorizo Bombón ${formatMoney(asadoPrices.chorizo)}/kg.\n\nRespondé “ASADO”.`,
-    recompra: `Hola ${firstName(target?.name) || "vecino"}, pasaron 15 días desde tu última compra.\n\nTe guardamos Milanesa Vacuna, Pollo x 3 kg y Bolsón Canino.`,
+    recompra: `Hola ${firstName(target?.name) || "vecino"}, recién salieron Milanesas Vacunas frescas (${formatMoney(livePrice("elaborados-milanesa-vacuna", 9999))}/kg) y hamburguesas de elaboración propia.\n\nReservá tu bandeja ahora por acá antes de que se agoten en mostrador y retirá sin hacer fila.`,
   };
 
   const campaignCards = CAMPAIGNS.map((campaign) => {
@@ -1923,7 +2168,7 @@ function CrmView({ customers, products, campaignState, onSimulate, onGoWhatsApp 
                 {[
                   ["Mié", "10:00", "Super promos", `${customers.length} clientes`],
                   ["Vie", "10:00", "¿Armamos el asado?", `${fridayAudience} clientes`],
-                  ["15d", "10:00", "Recompra", `${recompraAudience} clientes`],
+                  ["Stock", "Hoy", "Milanesas recién hechas", `${recompraAudience} clientes`],
                 ].map(([day, time, title, audience]) => (
                   <div key={title} className="flex items-center gap-3">
                     <span className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-[7px] bg-[#EFE9DF] text-[#6B091E]">
@@ -2090,6 +2335,30 @@ function App() {
     addToast({ type: "success", title: `${product.name} agregado`, message: `${product.unitLabel} · ${formatMoney(product.price)}`, icon: "ShoppingBag", duration: 2200 });
   };
 
+  const handleAddPack = (pack, packTotal) => {
+    setCart((prev) => {
+      const next = [...prev];
+      pack.items.forEach(({ productId, qty }) => {
+        const product = products.find((entry) => entry.id === productId);
+        if (!product || !product.stock) return;
+        const idx = next.findIndex((line) => line.productId === productId);
+        if (idx >= 0) {
+          next[idx] = { ...next[idx], qty: Math.round((next[idx].qty + qty) * 100) / 100 };
+        } else {
+          next.push({ productId, qty });
+        }
+      });
+      return next;
+    });
+    addToast({
+      type: "success",
+      title: `${pack.title} cargado`,
+      message: `${pack.weightLabel} · Estimado ${formatMoney(packTotal)}`,
+      icon: "Beef",
+      duration: 3200,
+    });
+  };
+
   const handleRemoveFromCart = (productId) => {
     setCart((prev) => prev.filter((line) => line.productId !== productId));
   };
@@ -2115,10 +2384,13 @@ function App() {
       paymentReference: `WEB-${String(Date.now()).slice(-5)}`,
     });
     const total = orderTotal(order);
+    const lane = getOrderLane(order.items, total);
+    const chances = calcRaffleChances(total);
+    const chancesLine = chances > 0 ? `\n🎟️ Sumaste ${chances} ${chances === 1 ? "chance digital" : "chances digitales"} para el Sorteo Novila.` : "";
     addWaMessage({
       side: "in",
       kind: "order_confirmed",
-      text: `Listo, ${firstName(order.customerName)}. Recibimos tu pedido #${order.id} en Frigorífico Novila.\n\nRetiro: ${order.pickupSlot}\nAv. Sabattini 3480 · Ventanilla Express\nTotal estimado: ${formatMoney(total)} (se ajusta al peso real en balanza)\nPago: ${order.payment}\n\nTe aviso por acá apenas esté preparado.`,
+      text: `Listo, ${firstName(order.customerName)}. Recibimos tu pedido #${order.id} en Frigorífico Novila.\n\nRetiro: ${order.pickupSlot}\n${BRAND.address}\n${lane.description}\nTotal estimado: ${formatMoney(total)} (se ajusta al peso real en balanza)\nPago: ${order.payment}${chancesLine}\n\nTe aviso por acá apenas esté preparado.`,
       time: nowTime(),
     });
     bumpUnreadIfNeeded();
@@ -2274,7 +2546,8 @@ function App() {
       const livePrice = (id, fallback) => products.find((product) => product.id === id)?.price ?? fallback;
       text = `Hola ${firstName(target?.name) || "vecino"}  ¿Armamos el asado de este finde?\n\nReservá hoy. Tenemos Vacío ${formatMoney(livePrice("vacuno-vacio", 15499))}/kg, Costilla ${formatMoney(livePrice("vacuno-costilla", 14499))}/kg y Chorizo Bombón ${formatMoney(livePrice("elaborados-chorizo-bombon", 11999))}/kg.\n\nRespondé “ASADO” y te lo dejo preparado.`;
     } else {
-      text = `Hola ${firstName(target?.name) || "vecino"} Pasaron 15 días desde tu última compra. \n\nTe guardamos Milanesa Vacuna, Pollo x 3 kg y Bolsón Canino para que no te quedes sin stock. Pedí en 1 minuto y pasá por la Ventanilla Express. `;
+      const milaPrice = products.find((product) => product.id === "elaborados-milanesa-vacuna")?.price ?? 9999;
+      text = `Hola ${firstName(target?.name) || "vecino"}, recién salieron Milanesas Vacunas frescas (${formatMoney(milaPrice)}/kg) y hamburguesas de elaboración propia.\n\nReservá tu bandeja por acá antes de que se agoten en mostrador y retirá por Ventanilla Express sin fila.`;
     }
     addWaMessage({ side: "in", kind: "campaign", campaignName: campaign.title, text, time: nowTime() });
     bumpUnreadIfNeeded();
@@ -2432,12 +2705,15 @@ function App() {
     setOrdersState(next);
     setWaFlow({ mode: "idle" });
     const total = orderTotal({ ...order, pickupSlot });
+    const lane = getOrderLane(order.items, total);
+    const chances = calcRaffleChances(total);
+    const chancesLine = chances > 0 ? `\n🎟️ Sumaste ${chances} ${chances === 1 ? "chance digital" : "chances digitales"} automáticas para el Sorteo Novila.` : "";
     return {
       order: { ...order, pickupSlot },
       messages: [{
         side: "in",
         kind: "order_confirmed",
-        text: `Listo, ${firstName(order.customerName)}. Tu pedido #${order.id} quedó reservado para retirar ${pickupSlot}.\n\nAv. Sabattini 3480 · Ventanilla Express\nTotal estimado: ${formatMoney(total)}.\n\nYa está confirmado. Te aviso por acá cuando esté preparado.`,
+        text: `Listo, ${firstName(order.customerName)}. Tu pedido #${order.id} quedó reservado para retirar ${pickupSlot}.\n\n${BRAND.address}\n${lane.description}\nTotal estimado: ${formatMoney(total)}.${chancesLine}\n\nYa está confirmado. Te aviso por acá cuando esté preparado.`,
       }],
     };
   };
@@ -2604,8 +2880,28 @@ function App() {
     if (norm.includes("ubicad") || norm.includes("ubicacion") || norm.includes("donde") || norm.includes("direccion") || norm.includes("horario")) {
       addWaMessage({
         side: "in",
-        text: ` Estamos en Av. Sabattini 3480, Córdoba Capital.\n\n Lunes a Sábado: 8:00 a 21:00 hs.\nDomingos y Feriados: 9:00 a 13:30 hs.\n\n¿Te armo un pedido? `,
-        quickReplies: ["Ver promos", "Armar pedido"],
+        text: `Estamos en ${BRAND.address}.\n\nLunes a Sábado: 8:00 a 21:00 hs.\nDomingos y Feriados: 9:00 a 13:30 hs.\nTel: ${BRAND.landline}\n\n¿Te armo un pedido para retirar sin fila?`,
+        quickReplies: ["Ver promos", "Corte vs. Envasado al Vacío", "Armar pedido"],
+      });
+      return;
+    }
+
+    if (norm.includes("envasado") || norm.includes("vacio vs") || norm.includes("al vacio")) {
+      const vacioCorte = products.find((p) => p.id === "vacuno-vacio")?.price ?? 15499;
+      const vacioEnvasado = products.find((p) => p.id === "envasado-vacio")?.price ?? 16999;
+      addWaMessage({
+        side: "in",
+        text: `Trabajamos las dos opciones en el local:\n\n• Corte fresco en mostrador: ej. Vacío ${formatMoney(vacioCorte)}/kg.\n• Envasado al vacío (heladeras de autoservicio): +$1.500/kg aprox. (ej. Vacío ${formatMoney(vacioEnvasado)}/kg), ideal para freezer y llevar directo sin esperar.\n\nY si encargás por acá o por la web, retirás sin hacer cola en el corralito de cajas.`,
+        quickReplies: ["Armar pedido", "Cotizar Media Res", "Ver promos"],
+      });
+      return;
+    }
+
+    if (norm.includes("sorteo") || norm.includes("cupon") || norm.includes("chances")) {
+      addWaMessage({
+        side: "in",
+        text: "🎟️ Con el Sorteo Novila ya no dependés de cupones de papel ni urnas.\n\nPor cada $25.000 de compra registrada en la web o por acá, sumás 1 chance digital automática asociada a tu número de WhatsApp (ej. una compra del mes de $100.000 suma 4 chances al instante).",
+        quickReplies: ["Armar pedido", "Ver promos"],
       });
       return;
     }
@@ -2661,11 +2957,11 @@ function App() {
       return;
     }
 
-    if (norm.includes("pago") || norm.includes("mercado pago") || norm.includes("transferencia") || norm.includes("efectivo")) {
+    if (norm.includes("pago") || norm.includes("mercado pago") || norm.includes("transferencia") || norm.includes("efectivo") || norm.includes("tarjeta") || norm.includes("credito") || norm.includes("cuota")) {
       addWaMessage({
         side: "in",
-        text: "Podés pagar al retirar en Caja Express (efectivo o débito) o con Mercado Pago / Transferencia. Si elegís pago digital, el retiro express se libera al instante. ",
-        quickReplies: ["Armar pedido", "Ver promos"],
+        text: "Aceptamos Transferencia / Mercado Pago, Tarjeta de Crédito (en 1 pago), Débito y Efectivo. Si abonás por transferencia previa, pasás directo por Retiro Express sin hacer fila en las 3 cajas.",
+        quickReplies: ["Armar pedido", "Ver promos", "Sorteo Novila"],
       });
       return;
     }
@@ -2755,6 +3051,7 @@ function App() {
             customers={customers}
             lastWebOrder={lastWebOrder}
             onAdd={handleAddToCart}
+            onAddPack={handleAddPack}
             onRemove={handleRemoveFromCart}
             onOpenCart={() => setCartOpen(true)}
             cartOpen={cartOpen}
