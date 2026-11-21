@@ -8,7 +8,7 @@ export const BRAND = {
   handle: "@frigorificonovila",
   slogan: "DEL CAMPO A TU CASA",
   valueProp: "Carnicería mayorista y minorista. Precio mayorista, llevés lo que llevés. Sin intermediarios.",
-  address: "Av. Amadeo Sabattini 3480 (al lado del Hiper Libertad), Córdoba Capital",
+  address: "Av. Amadeo Sabattini 3480, Córdoba Capital",
   hoursWeek: "Lunes a Sábado · 8:00 a 21:00 hs",
   hoursSunday: "Domingos y Feriados · 9:00 a 13:30 hs",
   phone: "351 700 8842",
@@ -198,7 +198,7 @@ export const INITIAL_CUSTOMERS = [
   },
   {
     id: "cli-4", name: "Parador El Durazno (Gastronómico)", phone: "351 333 7712", historicOrders: 5, historicSpent: 342000,
-    joined: "Oct 2026", tags: ["Web", "Mayorista", "B2B"], favorite: "Nalga (Envasado al Vacío)",
+    joined: "Oct 2026", tags: ["Web", "Mayorista", "B2B"], favorite: "",
   },
   {
     id: "cli-5", name: "Pablo Ferreyra", phone: "351 222 6650", historicOrders: 3, historicSpent: 112000,
@@ -228,6 +228,7 @@ export const INITIAL_ORDERS = [
     customerName: "Diego Bustos",
     phone: "351 444 9021",
     channel: "whatsapp",
+    date: "17/11/2026",
     pickupSlot: "Hoy 12:30 - 13:00 hs",
     payment: "Transferencia bancaria acreditada",
     paymentStatus: "approved",
@@ -237,6 +238,9 @@ export const INITIAL_ORDERS = [
     createdAt: "11:05",
     readyAt: "12:18",
     withdrawnAt: null,
+    deliveredAt: null,
+    pickupToken: "pickup_nv104_8f92a1b4",
+    pickupPin: "482910",
     items: [
       orderLine({
         productId: "promo-puchero-comun-3kg", name: "Promo Puchero Común", category: "Super promos",
@@ -248,7 +252,7 @@ export const INITIAL_ORDERS = [
       }),
       orderLine({
         productId: "elaborados-morcilla", name: "Morcilla", category: "Elaborados",
-        pricing: "kg", unitPrice: 7499, qty: 0.75, requestedKg: 0.75, actualKg: 0.78,
+        pricing: "kg", unitPrice: 7499, qty: 0.75, requestedKg: 0.75, actualKg: 0.75,
         unitLabel: "kg", image: "sausage",
       }),
     ],
@@ -260,6 +264,7 @@ export const INITIAL_ORDERS = [
     customerName: "Mariana Álvarez",
     phone: "351 555 0187",
     channel: "whatsapp",
+    date: "17/11/2026",
     pickupSlot: "Hoy 18:30 - 19:00 hs",
     payment: "Transferencia bancaria acreditada",
     paymentStatus: "approved",
@@ -269,6 +274,10 @@ export const INITIAL_ORDERS = [
     createdAt: "12:08",
     readyAt: null,
     withdrawnAt: null,
+    deliveredAt: null,
+    pickupToken: null,
+    pickupPin: null,
+    substitution: "similar",
     items: [
       orderLine({
         productId: "promo-aguja-2kg", name: "Promo Aguja", category: "Super promos",
@@ -288,30 +297,238 @@ export const INITIAL_ORDERS = [
     customerName: "Lucía Fernández",
     phone: "351 612 4478",
     channel: "web",
+    date: "17/11/2026",
     pickupSlot: "Hoy 13:30 - 14:00 hs",
     payment: "Mercado Pago / Transferencia",
     paymentStatus: "approved",
     paymentConfirmedAt: "10:35",
     paymentReference: "MP-55210",
-    status: 2,
+    status: 1,
     createdAt: "11:42",
     readyAt: null,
     withdrawnAt: null,
+    deliveredAt: null,
+    pickupToken: null,
+    pickupPin: null,
+    substitution: "avisar",
     items: [
       orderLine({
         productId: "vacuno-vacio", name: "Vacío", category: "Vacuno",
-        pricing: "kg", unitPrice: 15499, qty: 1, requestedKg: 1, actualKg: 1.12,
+        pricing: "kg", unitPrice: 15499, qty: 1, requestedKg: 1, actualKg: 1,
         unitLabel: "kg", image: "rawbeef",
       }),
       orderLine({
         productId: "vacuno-costilla", name: "Costilla", category: "Vacuno",
-        pricing: "kg", unitPrice: 14499, qty: 1.5, requestedKg: 1.5, actualKg: 1.48,
+        pricing: "kg", unitPrice: 14499, qty: 1.5, requestedKg: 1.5, actualKg: 1.5,
         unitLabel: "kg", image: "ribs",
       }),
       orderLine({
         productId: "elaborados-chorizo-bombon", name: "Chorizo Bombón", category: "Elaborados",
-        pricing: "kg", unitPrice: 11999, qty: 0.5, requestedKg: 0.5, actualKg: 0.52,
+        pricing: "kg", unitPrice: 11999, qty: 0.5, requestedKg: 0.5, actualKg: 0.5,
         unitLabel: "kg", image: "sausage",
+      }),
+    ],
+  },
+  {
+    id: "NV-101",
+    number: 101,
+    customerId: "cli-5",
+    customerName: "Pablo Ferreyra",
+    phone: "351 222 6650",
+    channel: "web",
+    date: "17/11/2026",
+    pickupSlot: "Hoy 10:00 - 10:30 hs",
+    payment: "Mercado Pago",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "09:30",
+    paymentReference: "MP-55198",
+    status: 4,
+    createdAt: "09:15",
+    readyAt: "09:55",
+    withdrawnAt: "10:15",
+    deliveredAt: "10:15",
+    pickupToken: "pickup_nv101_c4d21e",
+    pickupPin: "112233",
+    items: [
+      orderLine({
+        productId: "vacuno-vacio", name: "Vacío", category: "Vacuno",
+        pricing: "kg", unitPrice: 15499, qty: 1.5, requestedKg: 1.5, actualKg: 1.5,
+        unitLabel: "kg", image: "rawbeef",
+      }),
+      orderLine({
+        productId: "elaborados-chorizo-bombon", name: "Chorizo Bombón", category: "Elaborados",
+        pricing: "kg", unitPrice: 11999, qty: 1, requestedKg: 1, actualKg: 1,
+        unitLabel: "kg", image: "sausage",
+      }),
+    ],
+  },
+  {
+    id: "NV-098",
+    number: 98,
+    customerId: "cli-4",
+    customerName: "Parador El Durazno (Gastronómico)",
+    phone: "351 333 7712",
+    channel: "web",
+    date: "15/11/2026",
+    pickupSlot: "15/11 11:00 hs",
+    payment: "Transferencia bancaria acreditada",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "10:10",
+    paymentReference: "TRF-7912",
+    status: 4,
+    createdAt: "09:40",
+    readyAt: "10:45",
+    withdrawnAt: "11:15",
+    deliveredAt: "11:15",
+    items: [
+      orderLine({
+        productId: "vacuno-vacio", name: "Vacío", category: "Vacuno",
+        pricing: "kg", unitPrice: 15499, qty: 10, requestedKg: 10, actualKg: 10,
+        unitLabel: "kg", image: "rawbeef",
+      }),
+      orderLine({
+        productId: "vacuno-costilla", name: "Costilla", category: "Vacuno",
+        pricing: "kg", unitPrice: 14499, qty: 8, requestedKg: 8, actualKg: 8,
+        unitLabel: "kg", image: "ribs",
+      }),
+    ],
+  },
+  {
+    id: "NV-097",
+    number: 97,
+    customerId: "cli-4",
+    customerName: "Parador El Durazno (Gastronómico)",
+    phone: "351 333 7712",
+    channel: "web",
+    date: "08/11/2026",
+    pickupSlot: "08/11 10:30 hs",
+    payment: "Transferencia bancaria acreditada",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "09:50",
+    paymentReference: "TRF-7801",
+    status: 4,
+    createdAt: "09:10",
+    readyAt: "10:15",
+    withdrawnAt: "10:45",
+    deliveredAt: "10:45",
+    items: [
+      orderLine({
+        productId: "vacuno-molida-esp", name: "Molida Especial", category: "Vacuno",
+        pricing: "kg", unitPrice: 12499, qty: 6, requestedKg: 6, actualKg: 6,
+        unitLabel: "kg", image: "rawbeef",
+      }),
+      orderLine({
+        productId: "elaborados-chorizo-bombon", name: "Chorizo Bombón", category: "Elaborados",
+        pricing: "kg", unitPrice: 11999, qty: 4, requestedKg: 4, actualKg: 4,
+        unitLabel: "kg", image: "sausage",
+      }),
+    ],
+  },
+  {
+    id: "NV-096",
+    number: 96,
+    customerId: "cli-1",
+    customerName: "Lucía Fernández",
+    phone: "351 612 4478",
+    channel: "web",
+    date: "12/11/2026",
+    pickupSlot: "12/11 13:00 hs",
+    payment: "Mercado Pago",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "11:20",
+    paymentReference: "MP-54901",
+    status: 4,
+    createdAt: "11:00",
+    readyAt: "12:30",
+    withdrawnAt: "13:05",
+    deliveredAt: "13:05",
+    items: [
+      orderLine({
+        productId: "promo-asado-amigos-4kg", name: "Promo Asado con Amigos", category: "Super promos",
+        pricing: "pack", unitPrice: 28999, qty: 1, unitLabel: "4 kg", image: "grill",
+      }),
+    ],
+  },
+  {
+    id: "NV-095",
+    number: 95,
+    customerId: "cli-2",
+    customerName: "Mariana Álvarez",
+    phone: "351 555 0187",
+    channel: "whatsapp",
+    date: "10/11/2026",
+    pickupSlot: "10/11 18:00 hs",
+    payment: "Transferencia bancaria acreditada",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "16:45",
+    paymentReference: "TRF-7740",
+    status: 4,
+    createdAt: "16:20",
+    readyAt: "17:40",
+    withdrawnAt: "18:10",
+    deliveredAt: "18:10",
+    items: [
+      orderLine({
+        productId: "elaborados-milanesa-vacuna", name: "Milanesa Vacuna", category: "Elaborados",
+        pricing: "kg", unitPrice: 9999, qty: 2, requestedKg: 2, actualKg: 2,
+        unitLabel: "kg", image: "sausage",
+      }),
+    ],
+  },
+  {
+    id: "NV-094",
+    number: 94,
+    customerId: "cli-3",
+    customerName: "Diego Bustos",
+    phone: "351 444 9021",
+    channel: "whatsapp",
+    date: "06/11/2026",
+    pickupSlot: "06/11 12:00 hs",
+    payment: "Transferencia bancaria acreditada",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "10:30",
+    paymentReference: "TRF-7612",
+    status: 4,
+    createdAt: "10:00",
+    readyAt: "11:30",
+    withdrawnAt: "12:05",
+    deliveredAt: "12:05",
+    items: [
+      orderLine({
+        productId: "vacuno-costilla", name: "Costilla", category: "Vacuno",
+        pricing: "kg", unitPrice: 14499, qty: 2.5, requestedKg: 2.5, actualKg: 2.5,
+        unitLabel: "kg", image: "ribs",
+      }),
+      orderLine({
+        productId: "elaborados-chorizo-bombon", name: "Chorizo Bombón", category: "Elaborados",
+        pricing: "kg", unitPrice: 11999, qty: 1, requestedKg: 1, actualKg: 1,
+        unitLabel: "kg", image: "sausage",
+      }),
+    ],
+  },
+  {
+    id: "NV-093",
+    number: 93,
+    customerId: "cli-5",
+    customerName: "Pablo Ferreyra",
+    phone: "351 222 6650",
+    channel: "web",
+    date: "04/11/2026",
+    pickupSlot: "04/11 10:30 hs",
+    payment: "Mercado Pago",
+    paymentStatus: "approved",
+    paymentConfirmedAt: "09:40",
+    paymentReference: "MP-54312",
+    status: 4,
+    createdAt: "09:15",
+    readyAt: "10:10",
+    withdrawnAt: "10:35",
+    deliveredAt: "10:35",
+    items: [
+      orderLine({
+        productId: "vacuno-peceto", name: "Peceto", category: "Vacuno",
+        pricing: "kg", unitPrice: 17900, qty: 1.5, requestedKg: 1.5, actualKg: 1.5,
+        unitLabel: "kg", image: "rawbeef",
       }),
     ],
   },
@@ -355,6 +572,16 @@ export const INITIAL_WHATSAPP_MESSAGES = [
     text: "Para 6 personas calculá unos 500 g por persona. Te recomiendo:\n\n• 2 kg Vacío — $30.998\n• 1,5 kg Costilla — $21.749\n• 1 kg Chorizo Bombón — $11.999\n• 0,5 kg Morcilla — $3.750\n\nTotal estimado: $68.495\nRinde 5 kg de carne + achuras. Si querés, te lo tomo ahora.",
     time: "12:33",
     quickReplies: ["Armar este pedido", "Ver promos"],
+  },
+  {
+    id: "wa-ready-104",
+    side: "in",
+    kind: "ready",
+    orderCode: "NV-104",
+    pickupToken: "pickup_nv104_8f92a1b4",
+    pickupPin: "482910",
+    time: "12:18",
+    text: "Hola Diego. Tu pedido #NV-104 ya está listo y preparado en Frigorífico Novila. Pasá directo a retirarlo por Av. Sabattini 3480 mostrando tu Pase de Retiro digital con QR o dictando tu PIN de 6 dígitos en mostrador.",
   },
 ];
 
@@ -405,9 +632,46 @@ export const ASADO_PACKS = [
 ];
 
 export const PAYMENT_METHODS = [
-  { id: "mp", label: "Transferencia / Mercado Pago (Retiro Express sin fila en las 3 cajas)", short: "Transferencia / MP", icon: "Smartphone" },
-  { id: "credito", label: "Tarjeta de Crédito (1 pago) o Débito en Caja Express", short: "Tarjeta 1 pago / Débito", icon: "CreditCard" },
-  { id: "caja", label: "Efectivo al retirar en Caja Express", short: "Efectivo", icon: "Banknote" },
+  {
+    id: "talo",
+    label: "Transferencia bancaria instantánea (Talo)",
+    short: "Talo Transferencia",
+    icon: "Banknote",
+    description: "Alias y CVU único por orden · Acreditación y conciliación automática 24/7 sin enviar comprobante",
+    gateway: "Talo Pay",
+  },
+  {
+    id: "credito",
+    label: "Tarjeta de Crédito (Mobbex)",
+    short: "Crédito Mobbex",
+    icon: "CreditCard",
+    description: "Visa, Mastercard, Amex · Hasta 3 cuotas · Pasarela segura Mobbex",
+    gateway: "Mobbex Gateway",
+  },
+  {
+    id: "debito",
+    label: "Tarjeta de Débito (Mobbex)",
+    short: "Débito Mobbex",
+    icon: "CreditCard",
+    description: "Débito directo Visa Débito, Maestro, Cabal · Acreditación inmediata",
+    gateway: "Mobbex Gateway",
+  },
+  {
+    id: "mp",
+    label: "Mercado Pago",
+    short: "Mercado Pago",
+    icon: "Smartphone",
+    description: "Dinero en cuenta de Mercado Pago o saldo disponible al instante",
+    gateway: "Mercado Pago Checkout Pro",
+  },
+  {
+    id: "mostrador",
+    label: "Pago al retirar en mostrador (según peso real de balanza)",
+    short: "Pago en mostrador",
+    icon: "Scale",
+    description: "Pagás el importe exacto que marque la balanza al retirar (efectivo, débito o QR, sin diferencias ni devoluciones)",
+    gateway: "Caja Mostrador Novila",
+  },
 ];
 
 export const CAMPAIGNS = [
@@ -513,4 +777,234 @@ export function isValidPhone(phone) {
 export function isValidFullName(name) {
   const clean = String(name || "").trim();
   return /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' ]{3,}$/.test(clean) && clean.split(/\s+/).length >= 2;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Retiro en Mostrador · QR & PIN Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function generatePickupToken(orderId = "") {
+  const cleanId = String(orderId || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const hash = Math.random().toString(36).substring(2, 10);
+  return `pickup_${cleanId ? `${cleanId}_` : ""}${hash}`;
+}
+
+export function generatePickupPin() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+export function formatPin(pin) {
+  const clean = String(pin || "").replace(/\D/g, "").slice(0, 6);
+  if (clean.length > 3) return `${clean.slice(0, 3)} ${clean.slice(3)}`;
+  return clean;
+}
+
+export function buildPickupQrPayload(order) {
+  if (!order) return "";
+  const token = order.pickupToken || `pickup_${order.id}`;
+  const pin = order.pickupPin || "000000";
+  return `https://novila.ar/pickup?token=${encodeURIComponent(token)}&order=${encodeURIComponent(order.id)}&pin=${encodeURIComponent(pin)}`;
+}
+
+export function parsePickupScan(rawInput) {
+  if (!rawInput) return { type: "empty" };
+  const str = String(rawInput).trim();
+
+  // 1. PIN de 6 dígitos
+  const cleanDigits = str.replace(/\s+/g, "");
+  if (/^\d{6}$/.test(cleanDigits)) {
+    return { type: "pin", pin: cleanDigits };
+  }
+
+  // 2. URL de retiro
+  if (str.includes("novila.ar/pickup") || str.startsWith("http://") || str.startsWith("https://")) {
+    try {
+      const url = new URL(str, "https://novila.ar");
+      return {
+        type: "qr_url",
+        token: url.searchParams.get("token"),
+        orderId: url.searchParams.get("order"),
+        pin: url.searchParams.get("pin"),
+      };
+    } catch (e) {
+      const tokenMatch = str.match(/[?&]token=([^&]+)/);
+      const orderMatch = str.match(/[?&]order=([^&]+)/);
+      const pinMatch = str.match(/[?&]pin=([^&]+)/);
+      return {
+        type: "qr_url",
+        token: tokenMatch ? decodeURIComponent(tokenMatch[1]) : null,
+        orderId: orderMatch ? decodeURIComponent(orderMatch[1]) : null,
+        pin: pinMatch ? decodeURIComponent(pinMatch[1]) : null,
+      };
+    }
+  }
+
+  // 3. JSON estructurado
+  if (str.startsWith("{") && str.endsWith("}")) {
+    try {
+      const json = JSON.parse(str);
+      return {
+        type: "qr_json",
+        token: json.token || json.pickupToken,
+        orderId: json.orderId || json.id || json.order,
+        pin: json.pin || json.pickupPin,
+      };
+    } catch (e) {}
+  }
+
+  // 4. Token directo
+  if (str.startsWith("pickup_")) {
+    return { type: "token", token: str };
+  }
+
+  // 5. Código de pedido NV-xxx
+  if (/^NV-\d+$/i.test(str)) {
+    return { type: "order_id", orderId: str.toUpperCase() };
+  }
+
+  return { type: "raw", raw: str };
+}
+
+export function resolvePickupOrder(rawInput, orders = []) {
+  const parsed = parsePickupScan(rawInput);
+  let order = null;
+
+  if (parsed.pin) {
+    order = orders.find((o) => o.pickupPin === parsed.pin);
+  }
+  if (!order && parsed.token) {
+    order = orders.find((o) => o.pickupToken === parsed.token);
+  }
+  if (!order && parsed.orderId) {
+    order = orders.find((o) => o.id.toLowerCase() === parsed.orderId.toLowerCase());
+  }
+  if (!order && parsed.raw) {
+    const rawClean = parsed.raw.toLowerCase();
+    order = orders.find((o) =>
+      (o.pickupToken && o.pickupToken.toLowerCase() === rawClean) ||
+      (o.pickupPin && o.pickupPin === rawClean) ||
+      (o.id.toLowerCase() === rawClean)
+    );
+  }
+
+  if (!order) {
+    return {
+      status: "NOT_FOUND",
+      parsed,
+      message: "Código QR o PIN no reconocido. Verificá los datos e intentá nuevamente.",
+    };
+  }
+
+  // Control de Idempotencia y Anti-Fraude
+  if (order.status === 4 || order.deliveredAt || order.withdrawnAt) {
+    const time = order.deliveredAt || order.withdrawnAt || "anteriormente";
+    return {
+      status: "ALREADY_DELIVERED",
+      order,
+      message: `⚠️ Este pedido ya fue retirado el ${time} hs`,
+    };
+  }
+
+  if (order.status < 3) {
+    return {
+      status: "IN_PREPARATION",
+      order,
+      message: "⏳ Este pedido todavía está en preparación",
+    };
+  }
+
+  return {
+    status: "READY",
+    order,
+  };
+}
+
+export function lineTotal(item) {
+  if (!item) return 0;
+  if (item.pricing === "kg") {
+    const kg = Number(item.actualKg || item.requestedKg || item.qty || 0);
+    return kg * Number(item.unitPrice || 0);
+  }
+  return Number(item.qty || 0) * Number(item.unitPrice || 0);
+}
+
+export function buildInvoiceData(order) {
+  if (!order) return null;
+  const num = order.number || parseInt(String(order.id).replace(/\D/g, "") || "104", 10);
+  const ptoVta = 3;
+  const invoiceNumber = `fac-C-00003-${String(num).padStart(8, "0")}`;
+  const total = orderTotal(order);
+  const emissionDate = order.date || "17/11/2026";
+  const cae = `74200169${String(num).padStart(6, "0")}`;
+  const caeVto = "27/11/2026";
+
+  const fiscalPayload = {
+    ver: 1,
+    fecha: "2026-11-17",
+    cuit: 30716492819,
+    ptoVta,
+    tipoCmp: 11,
+    nroCmp: num,
+    importe: total,
+    moneda: "PES",
+    ctz: 1,
+    tipoDocRec: 99,
+    nroDocRec: 0,
+    tipoCodAut: "E",
+    codAut: Number(cae),
+  };
+
+  let payloadBase64 = "simulated_arca_qr";
+  try {
+    const jsonStr = JSON.stringify(fiscalPayload);
+    if (typeof btoa === "function") {
+      payloadBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
+    } else if (typeof Buffer !== "undefined") {
+      payloadBase64 = Buffer.from(jsonStr).toString("base64");
+    }
+  } catch (e) {
+    payloadBase64 = "simulated_arca_qr";
+  }
+
+  const qrUrl = `https://www.afip.gob.ar/fe/qr/?p=${payloadBase64}`;
+
+  return {
+    invoiceNumber,
+    emissionDate,
+    cae,
+    caeVto,
+    total,
+    qrUrl,
+    fiscalPayload,
+    emisor: {
+      name: "FRIGORÍFICO NOVILA",
+      businessName: "FRIGORÍFICO NOVILA S.A.S.",
+      address: "Av. Amadeo Sabattini 3480",
+      city: "CÓRDOBA",
+      vatCondition: "Responsable Inscripto",
+      cuit: "30-71649281-9",
+      grossIncome: "30716492819",
+      startDate: "01/10/2018",
+    },
+    client: {
+      name: order.customerName || "Consumidor Final",
+      dni: order.customerDni || "0",
+      address: order.customerAddress || ". CÓRDOBA (Retiro en Mostrador)",
+      vatCondition: "Consumidor Final",
+    },
+    items: (order.items || []).map((item, idx) => {
+      const qty = item.pricing === "kg" ? (item.actualKg || item.requestedKg || item.qty || 1) : (item.qty || 1);
+      const unitPrice = Number(item.unitPrice) || 0;
+      const subtotal = Number(qty) * unitPrice;
+      return {
+        code: item.productId ? item.productId.slice(0, 6) : String(1040 + idx),
+        description: item.name,
+        qty: Number(qty) || 1,
+        unitPrice,
+        discount: 0,
+        vatRate: 21.0,
+        total: subtotal,
+      };
+    }),
+  };
 }

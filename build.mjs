@@ -37,8 +37,8 @@ const tailwindCss = fs.readFileSync(path.join(dist, "app.css"), "utf8");
 const template = fs.readFileSync(path.join(root, "index.template.html"), "utf8");
 
 const html = template
-  .replace("/*__APP_JS__*/", appJs)
-  .replace("</head>", `<style>\n${fonts}\n${tailwindCss}\n</style>\n  </head>`);
+  .replace("/*__APP_JS__*/", () => appJs)
+  .replace("</head>", () => `<style>\n${fonts}\n${tailwindCss}\n</style>\n  </head>`);
 
 const out = path.join(root, "Frigorifico-Novila-Demo.html");
 fs.writeFileSync(out, html, "utf8");
